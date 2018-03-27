@@ -37,7 +37,7 @@ The solution: `flatr`
 
 ----
 
-1. A user gets a push notification on his / her smartphone _(not implemented)_
+1. A user gets a push notification on their smartphone _(not implemented)_
    - contaning a specifc timeframe
 2. The task gets done
 3. Task gets marked as done in the application
