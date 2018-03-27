@@ -39,7 +39,7 @@ The solution: `flatr`
 ----
 
 1. A user gets a push notification on their smartphone _(not implemented)_
-   - contaning a specifc timeframe
+   - containing a specifc timeframe
 2. The task gets done
 3. Task gets marked as done in the application
 
@@ -65,6 +65,18 @@ Invite system
 - first user can invite other users
 - these users get a Email with an invite link
 - then they are able to signup for a new account
+
+----
+
+![Dashboard](images/Dashboard.png)
+
+----
+
+![Edit Task](images/EditTask.png)
+
+----
+
+![User Settings](images/UserSettings.png)
 
 ----
 
@@ -105,10 +117,11 @@ Haskell
 - Compiled
 - => safe
 - Fast
+- pure
 
 ----
 
-![Haskell Benchmark](images/haskell_benchmark.png)
+![Haskell Benchmark](images/HaskellBenchmark.png)
 
 ----
 
