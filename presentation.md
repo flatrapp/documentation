@@ -356,6 +356,43 @@ Should you choose Elm?
 
 ----
 
+```bash
+$ cloc app
+      26 text files.
+      26 unique files.                              
+       0 files ignored.
+
+---------------------------------
+Language                     code
+---------------------------------
+Haskell                      1326
+---------------------------------
+SUM:                         1326
+---------------------------------
+```
+
+----
+
+```bash
+$ cloc src/
+      29 text files.
+      29 unique files.                              
+       0 files ignored.
+
+----------------------------------
+Language                      code
+----------------------------------
+Elm                           3620
+JavaScript                      71
+HTML                            13
+CSS                              1
+----------------------------------
+SUM:                          3705
+----------------------------------
+```
+
+----
+
 ## TODO & Future Plans
 
 ----
