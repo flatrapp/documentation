@@ -6,19 +6,11 @@ date: March 27, 2018
 
 ## Motivation
 
-----
-
 - we both live in shared flats
 - these get pretty messy from time to time
 - old solution don't work very well
 
-----
-
-![Cleaning Schedule example](http://lifeasmama.com/wp-content/uploads/2016/02/CleaningSchedule-e1454962083999-1024x791.jpg)
-
-----
-
-Disadvantages of cleaning schedules
+Disadvantages of regular cleaning schedules:
 
 - missing overview
 - requires a pen on hand
@@ -26,7 +18,6 @@ Disadvantages of cleaning schedules
 - _"I'll do it Tomorrow / on Sunday!"_
 - static
 
-----
 
 The solution: `flatr`
 
@@ -36,7 +27,7 @@ The solution: `flatr`
 - tasks need to be done in a short timeframe
 - fair distribution of tasks
 
-----
+The basic priciple:
 
 1. A user gets a push notification on their smartphone _(not implemented)_
    - containing a specifc timeframe
@@ -45,9 +36,8 @@ The solution: `flatr`
 
 A penalty for overdue tasks could be easily introduced
 
-----
 
-Highly configurable
+Our system is highly configurable:
 
 - Title
 - Description
@@ -57,30 +47,24 @@ Highly configurable
 
 Task overview can be printed as PDF (through the browser print menu)
 
-----
 
-Invite system
+To prevent unauthorized access, we have setup an invite system
 
 - not everyone should be able to join a flat
 - first user can invite other users
 - these users get a Email with an invite link
 - then they are able to signup for a new account
 
-----
+## Screenshots:
 
 ![Dashboard](images/Dashboard.png)
 
-----
-
 ![Edit Task](images/EditTask.png)
-
-----
 
 ![User Settings](images/UserSettings.png)
 
-----
 
-Project organization
+## Project organization
 
 |                     |                                                                |
 |---------------------+----------------------------------------------------------------|
@@ -89,11 +73,8 @@ Project organization
 | Core                | [github.com/flatrapp/core](https://github.com/flatrapp/core)   |
 | Shell               | [github.com/flatrapp/shell](https://github.com/flatrapp/shell) |
 
-----
 
 ## Backend
-
-----
 
 ### Technologies
 
@@ -101,14 +82,10 @@ Project organization
 - SQLite
 - Nix
 
-----
-
 Why nix as a build tool - and not stack or cabal?
 
 - If `nix-build` works once, it always works
 - Handles ALL dependencies, even C libraries and system packages
-
-----
 
 Haskell
 
@@ -119,11 +96,7 @@ Haskell
 - Fast
 - pure
 
-----
-
 ![Haskell Benchmark](images/HaskellBenchmark.png)
-
-----
 
 No `null` or `undefined`
 
@@ -135,21 +108,17 @@ test (Just bar) = print bar
 test Nothing    = print "Not there"
 ```
 
-----
-
-# Trust
+You can have trust in your software
 
 - compiles => doesn't crash
 - works & refactor => still works
 
-----
 
 Runtime problems:
 
 - inverted if conditionals
 - mail library couldn't handle TLS
 
-----
 
 ```haskell
 -- sqlAssertIsNotThere
@@ -158,24 +127,15 @@ case mEntity of
   Just _entity -> return ()
 ```
 
-----
-
 ```diff
 -userIsVerified = isJust . userVerifyCode
 +userIsVerified = isNothing . userVerifyCode
 ```
 
-----
-
 ```diff
 -            if hashedPw == userPassword user then do
 +            if hashedPw /= userPassword user then do
 ```
-
-----
-
-# Conclusion
-Haskell does not replace thinking
 
 ----
 
@@ -215,44 +175,15 @@ data Registration =
                  } deriving (Show, Generic)
 ```
 
-----
-
-One error was returning HTTP response in SQL query function
-
-----
-
-Going to be impossible:
-```haskell
-getInvitations :: SqlQuery [P.Entity Invitation]
-getInvitations = P.selectList [] [P.Asc InvitationId]
-
-getInvitationsAction :: ListContains n Email xs => ApiAction (HVect xs) a
-getInvitationsAction = do
-  allInvitations <- runSQL $ getInvitations
-  json $ map JsonInvitation.jsonInvitation allInvitations
-```
-
-<aside class="notes">
-Easter egg, query object from DB just by providing type
-Easter egg, enforces client to provide credentials
-</aside>
-
-----
-
 ## Frontend
-
-----
 
 - Using Bootstrap v4 for best UI experience
 - Implements `flatr` `JSON-API` according to specification
 - Reference implementation
 - Should work in any modern browser (uses ES5)
 
-----
 
-![Elm](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Elm_logo.svg/480px-Elm_logo.svg.png)
-
-----
+We use elm-lang:
 
 - Completely pure functional language
 - Strong typesystem
@@ -260,7 +191,6 @@ Easter egg, enforces client to provide credentials
 - Extremly fast
 - Very similar to Haskell
 
-----
 
 Benefits of using `Elm`
 
@@ -286,9 +216,7 @@ view =
     ]
 ```
 
-----
-
-Typesafety in `HTML`:
+This will not compile, because a Grid has to contain rows of columns:
 
 ```haskell
 view : Html msg
@@ -302,8 +230,6 @@ view =
     ]
 ```
 
-----
-
 Disadvantages of using `Elm`
 
 - Fairly young language, still developing
@@ -312,31 +238,6 @@ Disadvantages of using `Elm`
 - Takes long to get used to
 - Not made for _rapid prototyping_
 
-----
-
-`Elm` basics:
-
-```haskell
-main =
-  Html.beginnerProgram
-    { model = model
-    , view = view
-    , update = update
-    }
-```
-
-```haskell
-model : Model
-model = ...
-
-update : Msg -> Model -> Model
-update msg model = ...
-
-view : Model -> Html Msg
-view = ...
-```
-
-----
 
 Should you choose Elm?
 
@@ -350,11 +251,9 @@ Should you choose Elm?
   - If you need to work with a lot of JavaScript code
   - _If you need to do a Web assignment_
 
-----
+## Statistics
 
-## Demo
-
-----
+Backend:
 
 | Part              | Lines |
 |-------------------+-------|
@@ -365,7 +264,7 @@ Should you choose Elm?
 | Comments          | 79    |
 | Blank lines       | 208   |
 
-----
+Frontend:
 
 | Part            | Lines |
 |-----------------+-------|
@@ -374,21 +273,17 @@ Should you choose Elm?
 | HTML Components | 1853  |
 | SUM             | 3620  |
 
-----
 
 ## TODO & Future Plans
 
-----
 
-TODO
+TODO:
 
 - Sending Emails is still buggy (doesn't work if we try to link statically and the c libraries aren't properly linked)
 - Further improve the tasks assignment algorithm
-- 
 
-----
 
-Future Plans
+Future Plans:
 
 - Create a Android & iOS native App
 - Add more modules
@@ -397,8 +292,6 @@ Future Plans
 
 ----
 
-This presentation is free & open source
+This report is free & open source (CC BY-SA 4.0)
 
-![CC BY-SA 4.0](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/CC-BY-SA_icon.svg/320px-CC-BY-SA_icon.svg.png)
-
-Download at [https://github.com/flatrapp/documentation](https://github.com/flatrapp/documentation)
+Download sources at [https://github.com/flatrapp/documentation](https://github.com/flatrapp/documentation)
