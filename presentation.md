@@ -24,6 +24,7 @@ Disadvantages of cleaning schedules
 - requires a pen on hand
 - can't be checked remotely
 - _"I'll do it Tomorrow / on Sunday!"_
+- static
 
 ----
 
@@ -69,9 +70,12 @@ Invite system
 
 Project organization
 
-- Team GitHub organisation: [https://github.com/flatrapp](https://github.com/flatrapp)
-- API documentation in `RAML`: [https://flatrapp.github.io/api](https://flatrapp.github.io/api)
-- 
+|                     |                                                                |
+|---------------------+----------------------------------------------------------------|
+| GitHub organisation | [github.com/flatrapp](https://github.com/flatrapp)             |
+| API doc in `RAML`   | [flatrapp.github.io/api](https://flatrapp.github.io/api)       |
+| Core                | [github.com/flatrapp/core](https://github.com/flatrapp/core)   |
+| Shell               | [github.com/flatrapp/shell](https://github.com/flatrapp/shell) |
 
 ----
 
@@ -79,14 +83,157 @@ Project organization
 
 ----
 
+### Technologies
+
+- Haskell
+- SQLite
+- Nix
+
+----
+
+Why nix as a build tool - and not stack or cabal?
+
+- If `nix-build` works once, it always works
+- Handles ALL dependencies, even C libraries and system packages
+
+----
+
+Haskell
+
+- Advanced strong typesystem
+- Statically typed
+- Compiled
+- => safe
+- Fast
+
+----
+
+![Haskell Benchmark](images/haskell_benchmark.png)
+
+----
+
+No `null` or `undefined`
+
+```haskell
+foo :: Maybe a
+foo = ??
+
+test (Just bar) = print bar
+test Nothing    = print "Not there"
+```
+
+----
+
+# Trust
+
+- compiles => doesn't crash
+- works & refactor => still works
+
+----
+
+Runtime problems:
+
+- inverted if conditionals
+- mail library couldn't handle TLS
+
+----
+
+```haskell
+-- sqlAssertIsNotThere
+case mEntity of
+  Nothing -> errorJson errStatus
+  Just _entity -> return ()
+```
+
+----
+
+```diff
+-userIsVerified = isJust . userVerifyCode
++userIsVerified = isNothing . userVerifyCode
+```
+
+----
+
+```diff
+-            if hashedPw == userPassword user then do
++            if hashedPw /= userPassword user then do
+```
+
+----
+
+# Conclusion
+Haskell does not replace thinking
+
+----
+
+Parser of json fails if schema is invalid or conditions don't match
+
+```bash
+$ http POST localhost:8080/users email="foobarexample.org" firstName="Daniel" lastName="Schäfer" absent:=false password="ifot" 
+HTTP/1.1 400 Bad Request
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Date: Tue, 27 Mar 2018 04:11:29 GMT
+Server: Warp/3.2.13
+Transfer-Encoding: chunked
+```
+
+```json
+{
+    "error": {
+        "code": "bad_request",
+        "message": "Failed to parse json: Error in $: email does not match required regex."
+    }
+}
+```
+
+---
+
+Json objects
+
+```haskell
+data Registration =
+    Registration { email          :: Maybe Text
+                 , firstName      :: Text
+                 , lastName       :: Text
+                 , password       :: Text
+                 , invitationCode :: Maybe Text
+                 , absent         :: Bool
+                 } deriving (Show, Generic)
+```
+
+----
+
+One error was returning HTTP response in SQL query function
+
+----
+
+Going to be impossible:
+```haskell
+getInvitations :: SqlQuery [P.Entity Invitation]
+getInvitations = P.selectList [] [P.Asc InvitationId]
+
+getInvitationsAction :: ListContains n Email xs => ApiAction (HVect xs) a
+getInvitationsAction = do
+  allInvitations <- runSQL $ getInvitations
+  json $ map JsonInvitation.jsonInvitation allInvitations
+```
+
+<aside class="notes">
+Easter egg, query object from DB just by providing type
+Easter egg, enforces client to provide credentials
+</aside>
+
+----
+
 ## Frontend
 
 ----
 
-- using Bootstrap v4 for best UI experience
-- implements `flatr` `JSON-API` according to specification
-- reference implementation
-- should work in any modern browser (uses ES5)
+- Using Bootstrap v4 for best UI experience
+- Implements `flatr` `JSON-API` according to specification
+- Reference implementation
+- Should work in any modern browser (uses ES5)
 
 ----
 
@@ -94,21 +241,21 @@ Project organization
 
 ----
 
-- completely pure functional language
-- strong typesystem
-- compiles to JavaScript
-- extremly fast
-- very similar to Haskell
+- Completely pure functional language
+- Strong typesystem
+- Compiles to JavaScript
+- Extremly fast
+- Very similar to Haskell
 
 ----
 
 Benefits of using `Elm`
 
-- if it compiles, it works!
-- a function with the same input will produce the same output
-- build the HTML with Elm functions
-- immutable state handling
-- clear and obvious data flow
+- If it compiles, it works!
+- A function with the same input will produce the same output
+- Build the HTML with Elm functions
+- Immutable state handling
+- Clear and obvious data flow
 
 ----
 
@@ -146,11 +293,11 @@ view =
 
 Disadvantages of using `Elm`
 
-- fairly young language, still developing
-- no widespread usage, less support
-- requires to relearn basic programming concepts
-- takes long to get used to
-- not made for _rapid prototyping_
+- Fairly young language, still developing
+- No widespread usage, less support
+- Requires to relearn basic programming concepts
+- Takes long to get used to
+- Not made for _rapid prototyping_
 
 ----
 
@@ -181,14 +328,14 @@ view = ...
 Should you choose Elm?
 
 - Yes
-  - if you like stable software that has few bugs
-  - if you like typesafety and a good compiler
-  - want to get desktop-class programming on the web
+  - If you like stable software that has few bugs
+  - If you like typesafety and a good compiler
+  - Want to get desktop-class programming on the web
 - No
-  - if you're in a hurry
-  - if the software is just a prototype
-  - if you need to work with a lot of JavaScript code
-  - _if you need to do a Web assignment_
+  - If you're in a hurry
+  - If the software is just a prototype
+  - If you need to work with a lot of JavaScript code
+  - _If you need to do a Web assignment_
 
 ----
 
@@ -202,7 +349,7 @@ Should you choose Elm?
 
 TODO
 
-- Sending Emails is still buggy
+- Sending Emails is still buggy (doesn't work if we try to link statically and the c libraries aren't properly linked)
 - Further improve the tasks assignment algorithm
 - 
 
@@ -210,7 +357,7 @@ TODO
 
 Future Plans
 
-- create a Android & iOS native App
+- Create a Android & iOS native App
 - Add more modules
   - Shopping List
   - Expenses
